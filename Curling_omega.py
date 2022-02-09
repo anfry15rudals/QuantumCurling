@@ -41,7 +41,7 @@ class Curling(gym.Env):
         if this_end_result == 0:
             hammer = self.current_state[1]  # keep the current stance
         if this_end_result < 0:
-            hammer = 0
+            hammer = -1
         
         # determine the next state
         score_after_this_end = self.current_state[0] + this_end_result
@@ -61,7 +61,13 @@ class Curling(gym.Env):
         
         info = None  # placeholder for debug messages
         
-        return state, reward, self.done, info
+        if self.current_state[0] > 0:
+            return_state = np.array([1, self.current_state[1]])
+        elif self.current_state[0] < 0:
+            return_state = np.array([-1, self.current_state[1]])
+        else:
+            return_state = np.array([0, self.current_state[1]])
+        return return_state, reward, self.done, info
     
     def reset(self):
         self.num_ends = 0
@@ -71,19 +77,12 @@ class Curling(gym.Env):
 
     def winner_takes_it_all(self):
         if self.done and (self.current_state[0] > 0):
-            return 10
+            return 1
         else:
             return 0
 
     def each_end_counts(self):
         if self.done and (self.current_state[0] > 0):
-            return 10
-        if self.done and (self.current_state[0] < 0):
-            return -10
+            return 100 
         else:
-            if self.this_end_result>0:
-                return 1
-            elif self.this_end_result<0:
-                return -1
-            else:
-                return 0
+            return self.this_end_result
