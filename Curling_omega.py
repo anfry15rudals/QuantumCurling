@@ -19,7 +19,8 @@ class Curling(gym.Env):
         self.agressive_without_hammer_stat = (0.12122, 0.28463, 0.06996, 0.16607, 0.22607, 0.10338, 0.02867)
         self.conservative_with_hammer_stat = (0, 0, 0.1, 0.2, 0.6, 0.1, 0)
         self.conservative_without_hammer_stat = (0, 0.1, 0.6, 0.2, 0.1, 0, 0)
-        self.current_state = np.array([0, random.randint(2)])  # (score, hammer)
+        choice = [-1, 1]
+        self.current_state = np.array([0, random.choice(choice)])  # (score, hammer)
         self.reward_type = reward_type
         
     def step(self, action):
@@ -70,8 +71,9 @@ class Curling(gym.Env):
         return return_state, reward, self.done, info
     
     def reset(self):
+        choice = [-1, 1]
         self.num_ends = 0
-        self.current_state = np.array([0, random.randint(2)])  # (score, hammer)
+        self.current_state = np.array([0, random.choice(choice)])  # (score, hammer)
         self.this_end_result = 0
         return self.current_state    
 
