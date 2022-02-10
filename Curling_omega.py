@@ -25,7 +25,7 @@ class Curling(gym.Env):
         
     def step(self, action):
         # calculate this end's result
-        if self.current_state[1]:  # with hammer
+        if self.current_state[1]>0:  # with hammer
             if action:  # aggressive
                 this_end_result = random.choice(self.score_range, p=self.agressive_with_hammer_stat)
             else:  # conservative
@@ -38,11 +38,11 @@ class Curling(gym.Env):
         
         # decide if we'll be with the hammer for the next end
         if this_end_result > 0:
-            hammer = 1
+            hammer = -1
         if this_end_result == 0:
             hammer = self.current_state[1]  # keep the current stance
         if this_end_result < 0:
-            hammer = -1
+            hammer = 1
         
         # determine the next state
         score_after_this_end = self.current_state[0] + this_end_result
@@ -85,6 +85,6 @@ class Curling(gym.Env):
 
     def each_end_counts(self):
         if self.done and (self.current_state[0] > 0):
-            return 100 
+            return 100 + self.this_end_result
         else:
             return self.this_end_result
